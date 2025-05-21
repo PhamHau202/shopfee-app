@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shopfee_app/route/route_constants.dart';
 import 'package:shopfee_app/screens/auth/views/login_screen.dart';
 import 'package:shopfee_app/screens/auth/views/register_screen.dart';
+import 'package:shopfee_app/screens/home/views/home_screen.dart';
 import 'package:shopfee_app/screens/onboarding/views/onboarding_screen.dart';
 import 'package:shopfee_app/screens/splash/views/splash_screen.dart';
 
@@ -25,9 +26,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return MaterialPageRoute(
           builder: (context) => const LoginScreen(),
       );
-      // case passwordRecoveryScreenRoute:
+      case homeScreenRoute:
+        return MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+      );
+      // case homeSkeletonScreenRoute:
       //   return MaterialPageRoute(
-      //     builder: (context) => const PasswordRecoveryScreen(),
+      //     builder: (context) => const HomeSkeletonScreen(),
       // );
 
 
