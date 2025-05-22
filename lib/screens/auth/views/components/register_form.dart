@@ -198,7 +198,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
 
                 //navigate to the home screen
-                Navigator.pushNamed(context, homeScreenRoute);
+                Navigator.pushNamed(context, homeSkeletonScreenRoute);
               } : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled ? Color(0xFF5B4034) : Color(0xFFD9D9D9),

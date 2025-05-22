@@ -17,6 +17,7 @@ const grandisExtendedFont = "Grandis Extended";
 
 const Color slideActiveColor = Color(0x5d4037);
 const Color slideNoActiveColor = Color(0xcacaca);
+const Color primaryColor = Color(0xFF5B4034);
 
 const MaterialColor primaryMaterialColor =
     MaterialColor(0xFF9581FF, <int, Color>{
