@@ -1,45 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class FilterButtons extends StatelessWidget {
+class FilterButtons extends StatefulWidget {
   const FilterButtons({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> filters = [
-      {"label": "Filter", "icon": Icons.tune},
-      {"label": "Rating 4.5+", "icon": Icons.star},
-      {"label": "Price", "icon": Icons.attach_money},
-      {"label": "Promo", "icon": Icons.local_offer},
-    ];
+  State<FilterButtons> createState() => _FilterButtonsState();
+}
 
+class _FilterButtonsState extends State<FilterButtons> {
+  List<bool> _activeStates = [true, false, false, false];
+
+  final List<Map<String, dynamic>> filters = [
+    {"label": "Filter", "icon": Icons.tune},
+    {"label": "Rating 4.5+", "icon": Icons.star},
+    {"label": "Price", "icon": Icons.attach_money},
+    {"label": "Promo", "icon": Icons.local_offer},
+  ];
+
+  void _onFilterPressed(int index) {
+    setState(() {
+      _activeStates[index] = !_activeStates[index];
+    });
+    // TODO: Call your product filtering logic here based on active filters
+    // Example: widget.onFilterChanged?.call(_activeStates);
+    
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
-      height: 44, // chiều cao button
+      height: 44,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: List.generate(filters.length, (index) {
+            final bool isActive = _activeStates[index];
             return Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: OutlinedButton.icon(
-                onPressed: () {},
+                onPressed: () => _onFilterPressed(index),
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Color(0xFFE0E0E0)),
+                  backgroundColor: isActive ? const Color(0xFF5C4033) : const Color(0xFFF7F3F0),
+                  side: BorderSide(color: isActive ? const Color(0xFF5C4033) : const Color(0xFFE0E0E0)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
                   ),
-                  foregroundColor: const Color(0xFF5C4033),
+                  foregroundColor: isActive ? Colors.white : const Color(0xFF5C4033),
                 ),
                 icon: Icon(
                   filters[index]["icon"],
                   size: 18,
-                  color: const Color(0xFF5C4033),
+                  color: isActive ? Colors.white : const Color(0xFF5C4033),
                 ),
                 label: Text(
                   filters[index]["label"],
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
+                    color: isActive ? Colors.white : const Color(0xFF5C4033),
                   ),
                 ),
               ),

@@ -12,9 +12,9 @@ class _BannerSliderState extends State<BannerSlider> {
   int _currentIndex = 0;
 
   final List<String> _banners = [
-    'screens/home/slide1.jpg',
-    'screens/home/slide2.jpg',
-    'screens/home/slide3.jpg',
+    'screens/home/slide/slide1.jpg',
+    'screens/home/slide/slide2.jpg',
+    'screens/home/slide/slide3.jpg',
   ];
 
   @override
@@ -22,7 +22,7 @@ class _BannerSliderState extends State<BannerSlider> {
     return Column(
       children: [
         SizedBox(
-          height: 140,
+          height: 180,
           child: PageView.builder(
             controller: _pageController,
             itemCount: _banners.length,
@@ -38,7 +38,7 @@ class _BannerSliderState extends State<BannerSlider> {
                   _banners[index],
                   fit: BoxFit.cover,
                   width: double.infinity,
-                  height: 160,
+                  height: 180,
                   alignment: Alignment.center,
                 ),
               );

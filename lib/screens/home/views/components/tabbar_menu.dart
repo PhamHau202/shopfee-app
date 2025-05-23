@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
 class TabbarMenu extends StatelessWidget {
-  const TabbarMenu({super.key});
+  const TabbarMenu({super.key,
+    required this.selectedCategory,
+    required this.onCategoryChanged,
+  });
+
+  final String selectedCategory;
+  final ValueChanged<String> onCategoryChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +25,9 @@ class TabbarMenu extends StatelessWidget {
             Tab(text: "Non Coffee"),
             Tab(text: "Pastry"),
           ],
+          onTap: (value) => onCategoryChanged(
+            value == 0 ? "Coffee" : value == 1 ? "Non-Coffee" : "Pastry",
+          ),
         ),
       ),
     );

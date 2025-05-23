@@ -74,7 +74,7 @@ class _EntryPointState extends State<EntryPoint> {
                 children: [
                   Image.asset("/icons/home.png",
                       width: 24,height: 24,color: _currentIndex == 0 ? primaryColor : const Color(0xFF999999)),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   Text(
                     "Home",
                     style: TextStyle(
@@ -91,7 +91,7 @@ class _EntryPointState extends State<EntryPoint> {
               icon: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset("/icons/history.png", width: 24,height: 24,color: _currentIndex == 1 ? primaryColor : const Color(0xFF999999)),
+                  Image.asset("/icons/history.png", width: 30,height: 30,color: _currentIndex == 1 ? primaryColor : const Color(0xFF999999)),
                   const SizedBox(height: 4),
                   Text(
                     "History",
@@ -110,7 +110,7 @@ class _EntryPointState extends State<EntryPoint> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset("/icons/account.png", width: 24,height: 24,color: _currentIndex == 1 ? primaryColor : const Color(0xFF999999)),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   Text(
                     "Account",
                     style: TextStyle(
