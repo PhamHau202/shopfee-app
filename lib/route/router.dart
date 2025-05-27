@@ -9,6 +9,7 @@ import 'package:shopfee_app/screens/history/views/history_screen.dart';
 import 'package:shopfee_app/screens/home/views/home_screen.dart';
 import 'package:shopfee_app/screens/home/views/home_skelton_screen.dart';
 import 'package:shopfee_app/screens/onboarding/views/onboarding_screen.dart';
+import 'package:shopfee_app/screens/product/views/product_detail.dart';
 import 'package:shopfee_app/screens/splash/views/splash_screen.dart';
 
 
@@ -42,6 +43,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return MaterialPageRoute(
           builder: (context) => const EntryPoint(),
       );
+      case productDetailScreenRoute:   
+        final product = settings.arguments;
+        return MaterialPageRoute(
+          builder: (context) => ProductDetailScreen(product: product),
+        );
 
 
 

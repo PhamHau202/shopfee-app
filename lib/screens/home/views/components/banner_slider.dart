@@ -12,9 +12,12 @@ class _BannerSliderState extends State<BannerSlider> {
   int _currentIndex = 0;
 
   final List<String> _banners = [
-    'screens/home/slide/slide1.jpg',
-    'screens/home/slide/slide2.jpg',
-    'screens/home/slide/slide3.jpg',
+    'screens/home/slide/slide1.jpeg',
+    'screens/home/slide/slide2.jpeg',
+    'screens/home/slide/slide3.jpeg',
+    'screens/home/slide/slide4.jpeg',
+    'screens/home/slide/slide5.jpeg',
+    'screens/home/slide/slide6.jpeg',
   ];
 
   @override
@@ -22,7 +25,7 @@ class _BannerSliderState extends State<BannerSlider> {
     return Column(
       children: [
         SizedBox(
-          height: 180,
+          height: 200,
           child: PageView.builder(
             controller: _pageController,
             itemCount: _banners.length,
@@ -34,12 +37,16 @@ class _BannerSliderState extends State<BannerSlider> {
             itemBuilder: (context, index) {
               return ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  _banners[index],
-                  fit: BoxFit.cover,
+                child: SizedBox(
+                  height: 200,
                   width: double.infinity,
-                  height: 180,
-                  alignment: Alignment.center,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Image.asset(
+                      _banners[index],
+                      alignment: Alignment.topCenter,
+                    ),
+                  ),
                 ),
               );
             },

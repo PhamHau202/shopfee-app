@@ -7,6 +7,7 @@ class PupularProducts extends StatelessWidget {
   final double price;
   final double? oldPrice;
   final double rating;
+  final int numberSelledOnWeek;
 
   const PupularProducts({
     super.key,
@@ -16,6 +17,7 @@ class PupularProducts extends StatelessWidget {
     required this.price,
     this.oldPrice,
     required this.rating,
+    required this.numberSelledOnWeek,
   });
 
   @override
@@ -48,7 +50,7 @@ class PupularProducts extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text("Rp${price.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold)),
-              if (oldPrice != null)
+              if (oldPrice  != null)
                 Text(
                   "Rp${oldPrice!.toStringAsFixed(0)}",
                   style: const TextStyle(

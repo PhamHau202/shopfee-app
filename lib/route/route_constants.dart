@@ -5,6 +5,7 @@ const String registerScreenRoute = "register";
 const String homeScreenRoute = "home";
 const String homeSkeletonScreenRoute = "home_skeleton";
 const String entryPointScreenRoute = "entry_point";
+const String productDetailScreenRoute = "product_detail";
 const String checkoutScreenRoute = "checkout";
 const String paymentMethodScreenRoute = "payment_method";
 const String voucherScreenRoute = "voucher";

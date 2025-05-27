@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class TabbarMenu extends StatelessWidget {
   const TabbarMenu({super.key,
-    required this.selectedCategory,
+    //required this.objectFilter,
     required this.onCategoryChanged,
   });
 
-  final String selectedCategory;
+  //final Map<String, dynamic> objectFilter;
   final ValueChanged<String> onCategoryChanged;
 
   @override

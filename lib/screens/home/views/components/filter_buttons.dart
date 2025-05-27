@@ -2,29 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class FilterButtons extends StatefulWidget {
-  const FilterButtons({super.key});
+  const FilterButtons({super.key, required this.onFilterChanged});
+  final ValueChanged<List<bool>> onFilterChanged;
 
   @override
   State<FilterButtons> createState() => _FilterButtonsState();
 }
 
 class _FilterButtonsState extends State<FilterButtons> {
-  List<bool> _activeStates = [true, false, false, false];
+  final List<bool> _activeStates = [false, false, false, false];
 
   final List<Map<String, dynamic>> filters = [
-    {"label": "Filter", "icon": Icons.tune},
+    {"label": "Best seller", "icon": Icons.shopping_cart},
     {"label": "Rating 4.5+", "icon": Icons.star},
     {"label": "Price", "icon": Icons.attach_money},
-    {"label": "Promo", "icon": Icons.local_offer},
+    {"label": "Promotion", "icon": Icons.local_offer},
   ];
 
   void _onFilterPressed(int index) {
     setState(() {
       _activeStates[index] = !_activeStates[index];
     });
-    // TODO: Call your product filtering logic here based on active filters
-    // Example: widget.onFilterChanged?.call(_activeStates);
-    
+
+    widget.onFilterChanged(_activeStates);
   }
 
   @override

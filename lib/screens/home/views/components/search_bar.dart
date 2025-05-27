@@ -3,7 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:shopfee_app/constants.dart';
 
 class SearchBarWidget extends StatelessWidget {
-  const SearchBarWidget({super.key});
+    const SearchBarWidget({super.key,
+    required this.onSearchChanged,
+  });
+
+  final ValueChanged<String> onSearchChanged;
 
   OutlineInputBorder secondaryOutlineInputBorder(BuildContext context) {
     return OutlineInputBorder(
@@ -22,9 +26,12 @@ class SearchBarWidget extends StatelessWidget {
         children: [
           Expanded(
             child: TextFormField(
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                hintText: "What would you like to drink ?",  
+              onChanged: (value) {
+                onSearchChanged(value);
+              },
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                hintText: "What would you like to drink ?",
                 contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 filled: false,
                 border: secondaryOutlineInputBorder(context),
