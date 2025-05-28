@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
       'imagePath': 'screens/home/coffee/coffee9.jpg',
       'name': 'Product 9',
       'type': 'Coffee',
-      'desc': 'Description for Product 9',
+      'desc': 'Description for Product 9 alo alo alo alo aloalo ...',
       'price': 900.0,
       'oldPrice': 920.0,
       'rating': 4.9,
@@ -259,6 +259,32 @@ class _HomeScreenState extends State<HomeScreen> {
     "isItemsPromotion": false,
   };
 
+  final orderDetail = {
+    "productName" : "",
+    "quality" : 0,
+    "unitPrice" : 0,
+    "note" : "",
+    "subTotal" : 0
+  };
+
+  final List<Map<String, dynamic>> listProductOrdered = [
+    {
+      "countItems" : 0,
+      "totalPrice" : 0,
+      "orders" : []
+    }
+  ];
+
+  String itemName = "";
+
+  @override
+  void initState() {
+    super.initState();
+    itemName = listProductOrdered[0]["orders"]
+      .map((o) => o["productName"])
+      .join(", ");
+  }
+
  @override
   Widget build(BuildContext context) {
      final filteredProducts = listProducts.where((product) {
@@ -360,12 +386,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           // To handle tap, wrap with GestureDetector or InkWell
                           return GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
+                            onTap: () async{
+                              final result = await Navigator.pushNamed(
                                 context,
                                 productDetailScreenRoute,
                                 arguments: filteredProducts[index],
                               );
+
+                              if (result != null && result is Map<String, dynamic>) {
+                                listProductOrdered[0]["orders"].add(result);
+                                listProductOrdered[0]["countItems"] += result["quality"];
+                                listProductOrdered[0]["totalPrice"] += result["subTotal"];
+                              itemName = listProductOrdered[0]["orders"].map((o) => o["productName"]).join(", ");
+                                setState(() {});  
+                              }
                             },
                             child: product,
                           );
@@ -377,7 +411,59 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-          ],
+         
+            if(listProductOrdered[0]["countItems"] >0 )
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, checkoutScreenRoute,
+                                arguments: listProductOrdered,
+                              );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF5C4033),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("${listProductOrdered[0]["countItems"]} item",
+                                style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                              ),
+                              const SizedBox(width: 12),
+                              SizedBox(
+                                width: 180,
+                                child: Text(
+                                  itemName,
+                                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                                  overflow: TextOverflow.ellipsis, 
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                           Row(
+                            children: [
+                              Text(
+                                "Rp${listProductOrdered[0]["totalPrice"].toStringAsFixed(0)}",
+                                style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(width: 8),
+                              const Icon(Icons.shopping_bag_outlined, color: Colors.white),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
         ),
       ),
     );

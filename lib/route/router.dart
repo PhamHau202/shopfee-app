@@ -48,7 +48,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return MaterialPageRoute(
           builder: (context) => ProductDetailScreen(product: product),
         );
-
+      case checkoutScreenRoute:   
+        final product = settings.arguments;
+        return MaterialPageRoute(
+          builder: (context) => ProductDetailScreen(product: product),
+        );
 
 
       case historyScreenRoute:

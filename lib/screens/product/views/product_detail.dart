@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopfee_app/constants.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final dynamic product;
@@ -16,8 +17,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   String size = "Regular";
   String sugar = "Normal";
   String ice = "Normal";
-
-  double price = 25000;
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +64,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
           // Product Info Card (overlap)
           Positioned(
-            top: 312,
-            left: 25,
-            right: 25,
+            top: 292,
+            left: 20,
+            right: 20,
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -84,7 +83,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.product["type"], style: const TextStyle(color: Colors.black)),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(widget.product["type"], style: const TextStyle(color: Colors.black)),
+                      ),
+                      if(widget.product["oldPrice"] != null)
+                        Text(
+                        "Rp ${widget.product["price"].toStringAsFixed(0)}",
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey, decoration: TextDecoration.lineThrough,),
+                      )
+                    ],
+                  ),
+                  
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -95,7 +106,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                       Text(
-                        "Rp${widget.product["price"].toStringAsFixed(0)}",
+                        "Rp ${widget.product["price"].toStringAsFixed(0)}",
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
                       )
                     ],
@@ -106,7 +117,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         Expanded(
                           child: Text(widget.product["desc"], style: const TextStyle(color: Colors.black)),
                         ),
-                      const Spacer(),
+                      //const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.remove_circle_outline),
                         onPressed: () {
@@ -115,7 +126,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           });
                         },
                       ),
-                      Text(quantity.toString(), style: const TextStyle(fontSize: 16)),
+                      Text(quantity.toString(), style: const TextStyle(fontSize: 16, color: Colors.black)),
                       IconButton(
                         icon: const Icon(Icons.add_circle_outline),
                         onPressed: () {
@@ -133,6 +144,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       const Icon(Icons.star, color: Colors.orange, size: 18),
                       const SizedBox(width: 4),
                       Text("${widget.product["rating"]} (23)  •  Ratings and reviews"),
+                      const Spacer(),
+                      const Icon(Icons.keyboard_arrow_right, color: Colors.black, size: 20),
                       ],
                   )
                 ],
@@ -140,78 +153,107 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
 
-    // Scrollable content dưới info card
-    Positioned(
-      top: 512, // 332 (image) + 20 (overlap) + card height (160) => adjust theo thực tế
-      left: 0,
-      right: 0,
-      bottom: 70, // chừa chỗ cho footer
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Customize", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 16),
-            buildOptionRow("Variant", ["Ice", "Hot"], variant, (val) {
-              setState(() {
-                variant = val;
-              });
-            }),
-            buildOptionRow("Size", ["Regular", "Medium", "Large"], size, (val) {
-              setState(() {
-                size = val;
-              });
-            }),
-            buildOptionRow("Sugar", ["Normal", "Less"], sugar, (val) {
-              setState(() {
-                sugar = val;
-              });
-            }),
-            buildOptionRow("Ice", ["Normal", "Less"], ice, (val) {
-              setState(() {
-                ice = val;
-              });
-            }),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
-    ),
-
-    // Footer
-    Positioned(
-      left: 0,
-      right: 0,
-      bottom: 0,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(top: BorderSide(color: Colors.black12)),
-        ),
-        child: Row(
-          children: [
-            Text(
-              "Rp ${(price * quantity).toStringAsFixed(0)}",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-                backgroundColor: const Color(0xFF402218),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          Positioned(
+            top: 460, 
+            left: 20,
+            right: 20,
+            bottom: 70, // footer
+            child: Container(
+             padding: const EdgeInsets.only(top: 10, bottom: 8, right: 10, left: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: const Text("Add Order", style: TextStyle(fontSize: 16, color: Colors.white)),
-            )
-          ],
-        ),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Customize", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
+                    const SizedBox(height: 16),
+                    buildOptionRow("Variant", ["Ice", "Hot"], variant, (val) {
+                      setState(() {
+                        variant = val;
+                      });
+                    }),
+                    buildOptionRow("Size", ["Regular", "Medium", "Large"], size, (val) {
+                      setState(() {
+                        size = val;
+                      });
+                    }),
+                    buildOptionRow("Sugar", ["Normal", "Less"], sugar, (val) {
+                      setState(() {
+                        sugar = val;
+                      });
+                    }),
+                    buildOptionRow("Ice", ["Normal", "Less"], ice, (val) {
+                      setState(() {
+                        ice = val;
+                      });
+                    }),
+                  ],
+                ),
+            ),
+          ),
+
+        // Footer
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(top: BorderSide(color: Colors.black12)),
+              ),
+              padding: EdgeInsets.only(right: 10, left: 10, top: 5, bottom: 5),
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Total", style: TextStyle(color: Colors.black, fontSize: 14)),
+                      const SizedBox(height: 4),
+                      Text("Rp ${(widget.product["price"] * quantity).toStringAsFixed(0)}",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                            ),
+                          ),
+                        ]
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () {
+                          final orderDetail = {
+                            "productName": widget.product["name"],
+                            "quality": quantity,
+                            "unitPrice": widget.product["price"],
+                            "note": "$variant - $size - Sugar: $sugar - Ice: $ice",
+                            "subTotal": quantity * widget.product["price"],
+                          };
+
+                          Navigator.pop(context, orderDetail);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+                          backgroundColor: const Color(0xFF402218),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: const Text("Add Order", style: TextStyle(fontSize: 16, color: Colors.white)),
+                      )
+                    ],
+                  ),
+            ),
+          ),
+        ],
       ),
-    ),
-      ],
-    ),
     );
   }
 
@@ -224,33 +266,39 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 12,
-          runSpacing: 8,
-          children: options.map((option) {
-            final isSelected = selected == option;
-            return GestureDetector(
-              onTap: () => onSelected(option),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF402218) : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: Text(
-                  option,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+        Row( 
+          children: [
+            Expanded(
+              child: Text(title, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.black)),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 12,
+              runSpacing: 8,
+              children: options.map((option) {
+                final isSelected = selected == option;
+                return GestureDetector(
+                  onTap: () => onSelected(option),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: isSelected ? const Color(0xFF402218) : Colors.grey[200],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      option,
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black,  fontSize: 12,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            );
-          }).toList(),
+                );
+              }).toList(),
+            ),
+          ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 15),
       ],
     );
   }
