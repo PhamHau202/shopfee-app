@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shopfee_app/constants.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final dynamic product;
-  final void Function()? onAddToCart;
+  final bool flgEdit;
 
-  const ProductDetailScreen({super.key, required this.product, this.onAddToCart});
+  const ProductDetailScreen({super.key, required this.product, required this.flgEdit});
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
@@ -13,13 +12,31 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int quantity = 1;
+  final noteRegex = RegExp(r"^(.*?) - (.*?) - Sugar: (.*?) - Ice: (.*)$");
   String variant = "Ice";
   String size = "Regular";
   String sugar = "Normal";
   String ice = "Normal";
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    quantity = widget.product.containsKey("quantity") ? widget.product["quantity"] : 1;
+    
+    if(widget.product.containsKey("note"))
+    {
+      final match = noteRegex.firstMatch(widget.product["note"]);
+      if (match != null) {
+        variant = match.group(1)!;
+        size = match.group(2)!;
+        sugar = match.group(3)!;
+        ice = match.group(4)!;
+      }
+    }
+  }
+
+  Widget build(BuildContext context) {    
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -90,7 +107,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ),
                       if(widget.product["oldPrice"] != null)
                         Text(
-                        "Rp ${widget.product["price"].toStringAsFixed(0)}",
+                        "Rp ${widget.product["oldPrice"].toStringAsFixed(0)}",
                         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey, decoration: TextDecoration.lineThrough,),
                       )
                     ],
@@ -119,8 +136,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       //const Spacer(),
                       IconButton(
-                        icon: const Icon(Icons.remove_circle_outline),
-                        onPressed: () {
+                        icon: Icon(Icons.remove_circle_outline, color : quantity == 1 ? Colors.grey : Colors.black),
+                        onPressed: quantity == 1 ? null : () {
                           setState(() {
                             if (quantity > 1) quantity--;
                           });
@@ -233,10 +250,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         onPressed: () {
                           final orderDetail = {
                             "productName": widget.product["name"],
-                            "quality": quantity,
+                            "quantity": quantity,
                             "unitPrice": widget.product["price"],
                             "note": "$variant - $size - Sugar: $sugar - Ice: $ice",
                             "subTotal": quantity * widget.product["price"],
+                            "imagePath" : widget.product["imagePath"],
+                            "type" : widget.product["type"],
+                            "oldPrice": widget.product["oldPrice"],
+                            "desc" : widget.product["desc"],
+                            "rating" : widget.product["rating"]
                           };
 
                           Navigator.pop(context, orderDetail);

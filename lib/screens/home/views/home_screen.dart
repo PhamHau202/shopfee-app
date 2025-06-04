@@ -261,10 +261,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final orderDetail = {
     "productName" : "",
-    "quality" : 0,
+    "quantity" : 0,
     "unitPrice" : 0,
     "note" : "",
-    "subTotal" : 0
+    "subTotal" : 0,
+    "imagePath" : "",
+    "type" :"",
+    "oldPrice":0,
+    "desc" :"",
+    "rating" : 0
   };
 
   final List<Map<String, dynamic>> listProductOrdered = [
@@ -390,14 +395,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               final result = await Navigator.pushNamed(
                                 context,
                                 productDetailScreenRoute,
-                                arguments: filteredProducts[index],
+                                arguments: {
+                                  "product": filteredProducts[index],
+                                  "flgEdit": false,
+                                },
                               );
 
                               if (result != null && result is Map<String, dynamic>) {
                                 listProductOrdered[0]["orders"].add(result);
-                                listProductOrdered[0]["countItems"] += result["quality"];
+                                listProductOrdered[0]["countItems"] += result["quantity"];
                                 listProductOrdered[0]["totalPrice"] += result["subTotal"];
-                              itemName = listProductOrdered[0]["orders"].map((o) => o["productName"]).join(", ");
+                                itemName = listProductOrdered[0]["orders"].map((o) => o["productName"]).join(", ");
                                 setState(() {});  
                               }
                             },
@@ -418,7 +426,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, checkoutScreenRoute,
-                                arguments: listProductOrdered,
+                                arguments: listProductOrdered[0],
                               );
                     },
                     child: Container(
