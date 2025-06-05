@@ -40,6 +40,7 @@ class _RegisterFormState extends State<RegisterForm> {
     });
   }
 
+@override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -198,7 +199,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
 
                 //navigate to the home screen
-                Navigator.pushNamed(context, homeSkeletonScreenRoute);
+                Navigator.pushNamed(context, createPinCodeScreenRoute);
               } : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled ? Color(0xFF5B4034) : Color(0xFFD9D9D9),

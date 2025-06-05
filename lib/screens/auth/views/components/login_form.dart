@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shopfee_app/constants.dart';
 import 'package:shopfee_app/route/route_constants.dart';
 
 class LoginForm extends StatefulWidget {
@@ -30,10 +29,11 @@ class _LoginFormState extends State<LoginForm> {
 
   void checkFormValiddation() {
     setState(() {
-      isButtonEnabled = _phoneController.text.isNotEmpty;
+      isButtonEnabled = _phoneController.text.isNotEmpty && _phoneController.text.length >= 10;
     });
   }
 
+@override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -101,8 +101,8 @@ class _LoginFormState extends State<LoginForm> {
               onPressed: isButtonEnabled ? () {
                 // Handle login logic
 
-                //navigate to the home screen
-                Navigator.pushNamed(context, homeSkeletonScreenRoute);
+                //navigate to the pin_code screen
+                Navigator.pushNamed(context, pinCodeScreenRoute);
               } : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled ? Color(0xFF5B4034) : Color(0xFFD9D9D9),

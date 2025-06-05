@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:shopfee_app/route/route_constants.dart';
 import 'package:shopfee_app/screens/account/views/account_screen.dart';
+import 'package:shopfee_app/screens/auth/views/components/create_PIN.dart';
+import 'package:shopfee_app/screens/auth/views/components/input_PIN.dart';
 import 'package:shopfee_app/screens/auth/views/login_screen.dart';
 import 'package:shopfee_app/screens/auth/views/register_screen.dart';
 import 'package:shopfee_app/screens/checkout/views/checkout_screen.dart';
@@ -34,6 +36,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         return MaterialPageRoute(
           builder: (context) => const LoginScreen(),
       );
+      case pinCodeScreenRoute:
+        return MaterialPageRoute(builder: (context) => const PinCodeScreen());
+      case createPinCodeScreenRoute:
+        return MaterialPageRoute(builder: (context) => const CreatePinCodeScreen());
       case homeScreenRoute:
         return MaterialPageRoute(
           builder: (context) => const HomeScreen(),

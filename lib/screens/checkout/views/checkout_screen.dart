@@ -18,6 +18,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   TimeOfDay? _selectedTime;
   String txtTimeSelected = "";
   bool isChooseTransferBanking = true;
+  bool isSelectedVoucher = false;
   List<Map<String, dynamic>> listTransferBank = [
     {
       "id" : 1,
@@ -50,11 +51,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     "iconPath" : ""
   };
   dynamic selectedVoucher = {
+    "id": 0,
     "icon": "",
-      "title": "",
-      "subtitle": "",
-      "note": "r",
-      "available": false,
+    "title": "",
+    "subtitle": "",
+    "dateExpired" : "",
+    "precent" : 0,
+    "maxDiscount" : 0,
+    "note": "",
+    "available": false,
   };
 
   @override
@@ -93,13 +98,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             child: ListView(
                 padding: const EdgeInsets.all(16),           
                 children:[
-                  ...orders.map((order) => _buildOrderItem(order)).toList(),
+                  ...orders.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    var order = entry.value;
+                    return _buildOrderItem(order, index);
+                  }).toList(),
+                  //...orders.map((order) => _buildOrderItem(order)).toList(),
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text("Add Order", style: const TextStyle(fontWeight: FontWeight.bold)),
                     leading: const Icon(Icons.keyboard_arrow_left),
                     onTap: (){
-
+                      Navigator.pop(context);
                     },
                   ),
                  const Divider(height: 2),
@@ -123,11 +133,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     }
                   }),
                   const Divider(height: 2),
-                  _buildListTile("Voucher", "${selectedVoucher["name"] != "" ? selectedVoucher["title"] : "no voucher added"}", () async{
+                  _buildListTile("Voucher", "${selectedVoucher["title"] != "" ? selectedVoucher["title"] : "no voucher added"}", () async{
                     final rs =  await Navigator.pushNamed(context, voucherScreenRoute, arguments: {
                                   "selectedVoucher" : selectedVoucher
                                 },);
                      if (rs != null && rs is Map<String, dynamic> ) {
+                        isSelectedVoucher = true;
                         selectedVoucher = rs["selectedVoucher"];
                         setState(() {}); 
                      }
@@ -145,7 +156,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildOrderItem(Map<String, dynamic> order) {
+  Widget _buildOrderItem(Map<String, dynamic> order, int index) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -223,7 +234,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                      IconButton(
                         icon: Icon(Icons.delete_outline, size: 20, color: Colors.red),
                         onPressed: (){
-                          
+                          setState(() {
+                            orders.removeAt(index);
+                          });  
+
+                          if(orders.isEmpty)
+                          {
+                            Navigator.pop(context);
+                          }
                         },
                      ),
                     const Spacer(),
@@ -335,13 +353,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Text("Rp${NumberFormat("#,##0", "en_US").format(total)}",style: TextStyle( color: Colors.black)),
           ],
         ),
+        if(isSelectedVoucher)
+        ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("Discount", style: TextStyle( color: Colors.black)),
+                Text("- Rp${NumberFormat("#,##0", "en_US").format((total * selectedVoucher["precent"]) /100 )}",style: TextStyle( color: Colors.black)),
+              ],
+            ),
+          ],
         const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text("Total", style: TextStyle(color: Colors.black)),
             Text(
-              "Rp${NumberFormat("#,##0", "en_US").format(total)}",
+              "Rp${NumberFormat("#,##0", "en_US").format(isSelectedVoucher ? total - ((total * selectedVoucher["precent"]) /100 ) : total)}",
               style: const TextStyle(color: Colors.black),
             ),
           ],
@@ -361,7 +389,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         children: [
           Expanded(
             child: Text(
-              "Rp${NumberFormat("#,##0", "en_US").format(total)}",
+              "Rp${NumberFormat("#,##0", "en_US").format(isSelectedVoucher ? total - ((total * selectedVoucher["precent"]) /100 ) : total)}",
               style: const TextStyle(
                   fontSize: 18, fontWeight: FontWeight.w900, color: Colors.black),
             ),

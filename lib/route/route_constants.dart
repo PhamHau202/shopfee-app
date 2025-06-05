@@ -1,6 +1,8 @@
 const String splashScreenRoute = "splash";
 const String onBoardingScreenRoute = "onboarding";
 const String logInScreenRoute = "login";
+const  String pinCodeScreenRoute = "pin_code";
+const  String createPinCodeScreenRoute = "create_pin_code";
 const String registerScreenRoute = "register";
 const String homeScreenRoute = "home";
 const String homeSkeletonScreenRoute = "home_skeleton";
@@ -11,8 +13,6 @@ const String paymentMethodScreenRoute = "payment_method";
 const String voucherScreenRoute = "voucher";
 const String transactionScreenRoute = "transaction";
 const String otpCodeScreenRoute = "otp_code";
-const String inputPINScreenRoute = "input_pin";
-const String createPINScreenRoute = "create_pin";
 const String trackingOrderScreenRoute = "tracking_order";
 const String ratingReviewScreenRoute = "rating_review";
 const String historyScreenRoute = "history";
