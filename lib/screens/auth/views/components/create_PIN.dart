@@ -106,7 +106,7 @@ class _CreatePinCodeScreenState extends State<CreatePinCodeScreen> {
                   backgroundColor: Colors.brown,
                   disabledBackgroundColor: Colors.grey.shade300,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                 ),
                 child: const Text("Confirm", style: TextStyle(color: Colors.white),),

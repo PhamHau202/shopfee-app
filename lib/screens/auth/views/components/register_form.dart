@@ -40,6 +40,90 @@ class _RegisterFormState extends State<RegisterForm> {
     });
   }
 
+  void showOtpPopup(BuildContext context, String phoneNumber) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, 
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  "/images/input/otp_popup.png",
+                  width: 180,
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  "Send OTP code",
+                  style: TextStyle(
+                    fontSize: 18, 
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "We will send the OTP code via SMS. Make sure the number $phoneNumber is active",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: Colors.brown),
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Text("Cancel"),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, otpCodeLoadingScreenRoute, arguments: {
+                            "phoneNumber" : phoneNumber,
+                            "isFinalProcessing" : false
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.brown,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Text("Confirm"),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+          );
+        }
+    );
+  }
+  
+
+  
+
 @override
   Widget build(BuildContext context) {
     return Form(
@@ -194,18 +278,15 @@ class _RegisterFormState extends State<RegisterForm> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: isButtonEnabled ? () {
+              onPressed: isButtonEnabled ? () async{
                 // Handle registration logic
-
-
-                //navigate to the home screen
-                Navigator.pushNamed(context, createPinCodeScreenRoute);
+                showOtpPopup(context, _phoneController.text);
               } : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled ? Color(0xFF5B4034) : Color(0xFFD9D9D9),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 elevation: 0,

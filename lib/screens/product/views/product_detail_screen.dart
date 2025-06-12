@@ -12,7 +12,7 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int quantity = 1;
-  final noteRegex = RegExp(r"^(.*?) - (.*?) - Sugar: (.*?) - Ice: (.*)$");
+  final noteRegex = RegExp(r"^(.*?), (.*?), Sugar: (.*?), Ice: (.*)$");
   String variant = "Ice";
   String size = "Regular";
   String sugar = "Normal";
@@ -35,6 +35,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
+@override
   Widget build(BuildContext context) {    
 
     return Scaffold(
@@ -252,7 +253,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             "productName": widget.product["name"],
                             "quantity": quantity,
                             "unitPrice": widget.product["price"],
-                            "note": "$variant - $size - Sugar: $sugar - Ice: $ice",
+                            "note": "$variant, $size, Sugar: $sugar, Ice: $ice",
                             "subTotal": quantity * widget.product["price"],
                             "imagePath" : widget.product["imagePath"],
                             "type" : widget.product["type"],
@@ -266,7 +267,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                           backgroundColor: const Color(0xFF402218),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                         ),
                         child: const Text("Add Order", style: TextStyle(fontSize: 16, color: Colors.white)),
                       )

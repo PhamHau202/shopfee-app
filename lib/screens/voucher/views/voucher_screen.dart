@@ -161,7 +161,6 @@ class _VoucherScreenState extends State<VoucherScreen> {
               separatorBuilder: (_, __) => const Divider(),
               itemBuilder: (context, index) {
                 final voucher = voucherList[index];
-                final isSelected = index == selectedVoucherIndex;
 
                 return ListTile(
                   enabled: voucher["available"],
@@ -259,7 +258,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
                 backgroundColor: Color(0xFF5D4037),
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 ),
               ),
               child: Text(

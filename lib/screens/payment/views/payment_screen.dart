@@ -15,29 +15,42 @@ class PaymentMethodScreen extends StatefulWidget {
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   int selectedIndex = 0;
   bool isShowBankList = false;
+  bool isChooseWallet = false;
   String selectedBank = "";
   bool isChooseBanking = false;
-  Map<String, dynamic>  selectedCard = {};
+  Map<String, dynamic> selectedCard = {};
+  Map<String, dynamic> walletDefault = {
+     "cardName": "Momo",
+      "iconPath": "/screens/payment/momo_wallet.png"
+  };
 
   @override
   void initState() {
     super.initState();
     isChooseBanking = widget.isChooseTransferBanking;
     selectedIndex = isChooseBanking ? 0 : 1;
-    selectedCard = (widget.selectedCard["cardName"] != "" )
-    ? widget.selectedCard as Map<String, dynamic>
+    selectedCard = (widget.selectedCard["cardName"] != "")    
+    ? widget.selectedCard as Map<String, dynamic> 
     : {
-        "cardName": "Momo",
-        "iconPath": "/screens/payment/momo_wallet.png"
+        "cardName": widget.listTransferBank[0]["cardName"],
+        "iconPath": widget.listTransferBank[0]["iconPath"]
       };
   }
 
   void changeTransferBanking(oldIndexSelected, newIndexSelected){
-    var temp = widget.listTransferBank[oldIndexSelected];
-    widget.listTransferBank[oldIndexSelected] = widget.listTransferBank[newIndexSelected];
-    widget.listTransferBank[oldIndexSelected]["id"] = temp["id"];
-    temp["id"] = widget.listTransferBank[newIndexSelected]["id"];
-    widget.listTransferBank[newIndexSelected] = temp;
+    setState(() {
+       var temp = widget.listTransferBank[oldIndexSelected];
+      widget.listTransferBank[oldIndexSelected] = widget.listTransferBank[newIndexSelected];
+      widget.listTransferBank[newIndexSelected] = temp;
+
+      var tempId = widget.listTransferBank[oldIndexSelected]["id"];
+      widget.listTransferBank[oldIndexSelected]["id"] = widget.listTransferBank[newIndexSelected]["id"];
+      widget.listTransferBank[newIndexSelected]["id"] = tempId;
+
+      isChooseBanking = true;
+      selectedCard = widget.listTransferBank[0];
+      selectedIndex = 0;
+    });
   }
 
 @override
@@ -76,7 +89,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             icon: Icons.account_balance_wallet,
             hasIconFile: false,
             imagePath: widget.listTransferBank[0]["iconPath"],
-            title: widget.listTransferBank[0]["name"],
+            title: widget.listTransferBank[0]["cardName"],
             subtitle: 'Total: ${widget.totalPrice}',            
             trailing: Icon(
               selectedIndex == 0 && isChooseBanking ? Icons.radio_button_checked : Icons.radio_button_off,
@@ -88,8 +101,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             index: 1,
             icon: null,
             hasIconFile: false,
-            imagePath: selectedCard["iconPath"],
-            title: selectedCard["cardName"],
+            imagePath: isChooseBanking ? walletDefault["iconPath"] : selectedCard["iconPath"],
+            title: isChooseBanking ? walletDefault["cardName"] : selectedCard["cardName"],
             subtitle: 'Total: ${widget.totalPrice}',
             trailing: Icon(
               selectedIndex == 1 ? Icons.radio_button_checked : Icons.radio_button_off,
@@ -119,11 +132,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                 );
 
                 if (rs != null) {
-                   setState(() => selectedCard = Map<String, dynamic>.from(rs));
-                   if(selectedIndex == 1)
-                   {
-                    Navigator.pop(context, {"listTransferBank" : widget.listTransferBank, "isChooseTransferBanking" : isChooseBanking, "selectedCard" : selectedCard});
-                   }
+                   setState(() {
+                     selectedCard = Map<String, dynamic>.from(rs);
+                     isChooseWallet = true;
+                   });
+                  //  if(selectedIndex == 1)
+                  //  {
+                    Navigator.pop(context, {"listTransferBank" : widget.listTransferBank, "isChooseTransferBanking" : false, "selectedCard" : selectedCard});
+                  // }
                 }
               },
               child: Text('Change', style: TextStyle(color: Colors.white)),
@@ -154,13 +170,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         width: 32,
                         height: 32,
                       ),
-                      title: Text(widget.listTransferBank[index + 1]["name"]),
+                      title: Text(widget.listTransferBank[index + 1]["cardName"]),
                       onTap: () {
-                        changeTransferBanking(0, index + 1);
-                        setState(() {
-                          isChooseBanking = true;
-                        });
-                        Navigator.pop(context, {"listTransferBank" : widget.listTransferBank, "isChooseTransferBanking" : isChooseBanking, "selectedCard" : widget.selectedCard});
+                        changeTransferBanking(0, index + 1);                        
+                        Navigator.pop(context, {"listTransferBank" : widget.listTransferBank, "isChooseTransferBanking" : isChooseBanking, "selectedCard" : selectedCard});
                       },
                     );
                   },
@@ -193,7 +206,11 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         {
           setState(() {
             selectedIndex = index;
-            isChooseBanking = index == 0;
+            isChooseBanking = index == 0;       
+            if(index == 1 && !isChooseWallet)
+            {
+              selectedCard = walletDefault;
+            }     
           }); 
            Navigator.pop(context, {"listTransferBank" : widget.listTransferBank, "isChooseTransferBanking" : isChooseBanking, "selectedCard" : selectedCard});
         }

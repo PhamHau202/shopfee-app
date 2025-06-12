@@ -12,9 +12,14 @@ import 'package:shopfee_app/screens/history/views/history_screen.dart';
 import 'package:shopfee_app/screens/home/views/home_screen.dart';
 import 'package:shopfee_app/screens/home/views/home_skelton_screen.dart';
 import 'package:shopfee_app/screens/onboarding/views/onboarding_screen.dart';
+import 'package:shopfee_app/screens/otp_code/views/otp_code_confirm.dart';
+import 'package:shopfee_app/screens/otp_code/views/otp_code_loading.dart';
 import 'package:shopfee_app/screens/payment/views/payment_screen.dart';
 import 'package:shopfee_app/screens/product/views/product_detail_screen.dart';
+import 'package:shopfee_app/screens/rating_review/views/rating_review_screen.dart';
 import 'package:shopfee_app/screens/splash/views/splash_screen.dart';
+import 'package:shopfee_app/screens/tracking_order/views/tracking_order_screen.dart';
+import 'package:shopfee_app/screens/transaction/views/transaction_screen.dart';
 import 'package:shopfee_app/screens/voucher/views/voucher_screen.dart';
 
 
@@ -83,6 +88,44 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) => VoucherScreen(selectedVoucher: selectedVoucher),
       );
 
+      case otpCodeLoadingScreenRoute:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final phoneNumber = args?['phoneNumber'];
+        final isFinalProcessing = args?['isFinalProcessing'];
+        
+        return MaterialPageRoute(
+          builder: (context) => OtpWaitingScreen(phoneNumber : phoneNumber, isFinalProcessing: isFinalProcessing),
+        );
+
+      case otpCodeConfirmScreenRoute:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final phoneNumber = args?['phoneNumber'];
+        return MaterialPageRoute(
+          builder: (context) => ConfirmOtpScreen(phoneNumber : phoneNumber),
+        );
+
+      case transactionScreenRoute:   
+      final args = settings.arguments as Map<String, dynamic>?;
+      final receiptOrder = args?["receiptOrder"];
+      
+      return MaterialPageRoute(
+        builder: (context) => TransactionScreen(receiptOrder: receiptOrder),
+      );
+
+      case trackingOrderScreenRoute:
+       final args = settings.arguments as Map<String, dynamic>?;
+       final receiptOrder = args?["receiptOrder"];
+        return MaterialPageRoute(
+          builder: (context) => TrackingOrderScreen(receiptOrder: receiptOrder),
+      );
+
+      case ratingReviewScreenRoute:
+       final args = settings.arguments as Map<String, dynamic>?;
+       final orderId = args?["orderId"];
+       final productId = args?["productId"];
+        return MaterialPageRoute(
+          builder: (context) => RatingReviewScreen(orderId: orderId, productId: productId),
+      );
 
       case historyScreenRoute:
         return MaterialPageRoute(

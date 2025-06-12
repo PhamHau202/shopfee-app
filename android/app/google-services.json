@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "34122887072",
+    "project_id": "shopfee-1542c",
+    "storage_bucket": "shopfee-1542c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34122887072:android:4ca9a352624e4d12c8fec5",
+        "android_client_info": {
+          "package_name": "com.example.shopfee_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKOdRgVP2-l5IA8MAxIWQtwjyEg7-hIW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

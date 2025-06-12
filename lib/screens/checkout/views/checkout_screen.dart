@@ -22,27 +22,27 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   List<Map<String, dynamic>> listTransferBank = [
     {
       "id" : 1,
-      "name" : "Viettinbank",
+      "cardName" : "Viettinbank",
       "iconPath" : "/screens/payment/vietinbank.jpg"
     },
     {
       "id" : 2,
-      "name" : "Agribank",
+      "cardName" : "Agribank",
       "iconPath" : "/screens/payment/agribank.png"
     },
     {
       "id" : 3,
-      "name" : "Vietcombank",
+      "cardName" : "Vietcombank",
       "iconPath" : "/screens/payment/vietcombank.png"
     },
     {
       "id" : 4,
-      "name" : "BIDV",
+      "cardName" : "BIDV",
       "iconPath" : "/screens/payment/bidv.png"
     },
     {
       "id" : 5,
-      "name" : "MB",
+      "cardName" : "MB",
       "iconPath" : "/screens/payment/mbbank.png"
     }
   ];
@@ -60,6 +60,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     "maxDiscount" : 0,
     "note": "",
     "available": false,
+  };
+
+  dynamic receiptOrder = {
+    "price" : 0,
+    "voucher" : 0,
+    "total" : 0,
+    "paymentMethod" : "",
+    "schedulePickUp" : "",
+    "items" : [],
   };
 
   @override
@@ -101,7 +110,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ...orders.asMap().entries.map((entry) {
                     int index = entry.key;
                     var order = entry.value;
-                    return _buildOrderItem(order, index);
+                    return buildOrderItem(order, index);
                   }).toList(),
                   //...orders.map((order) => _buildOrderItem(order)).toList(),
                   ListTile(
@@ -115,10 +124,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                  const Divider(height: 2),
                   const SizedBox(height: 4),
 
-                  _buildSectionTitle("When do you want order?"),
-                  _buildTimeOptions(),
+                  buildSectionTitle("When do you want order?"),
+                  buildTimeOptions(),
                   //const SizedBox(height: 16),
-                  _buildListTile("Payment Method", " ${isChooseTransferBanking ? listTransferBank[0]["name"] : selectedCard["cardName"]} (${NumberFormat("#,##0", "en_US").format(totalPrice)})", () async{
+                  buildListTile("Payment Method", " ${isChooseTransferBanking ? listTransferBank[0]["cardName"] : selectedCard["cardName"]} (${NumberFormat("#,##0", "en_US").format(totalPrice)})", () async{
                     final result =  await Navigator.pushNamed(context, paymentMethodScreenRoute, arguments: {
                                   "totalPrice": totalPrice, "listTransferBank" : listTransferBank, "isChooseTransferBanking" : isChooseTransferBanking,
                                   "selectedCard" : selectedCard
@@ -128,12 +137,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       listTransferBank = result["listTransferBank"];
                       isChooseTransferBanking = result["isChooseTransferBanking"];
                       selectedCard = result["selectedCard"];
-
-                      setState(() {});  
+                      print(selectedCard.toString());
+                      setState(() {});
                     }
                   }),
                   const Divider(height: 2),
-                  _buildListTile("Voucher", "${selectedVoucher["title"] != "" ? selectedVoucher["title"] : "no voucher added"}", () async{
+                  buildListTile("Voucher", "${selectedVoucher["title"] != "" ? selectedVoucher["title"] : "no voucher added"}", () async{
                     final rs =  await Navigator.pushNamed(context, voucherScreenRoute, arguments: {
                                   "selectedVoucher" : selectedVoucher
                                 },);
@@ -145,18 +154,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   }),
                   const Divider(height: 2),
                   const SizedBox(height: 16),
-                  _buildPaymentSummary(totalPrice),
+                  buildPaymentSummary(totalPrice),
                 ],
               ),
             ),
           ),
-          _buildBottomCheckout(totalPrice),
+          buildBottomCheckout(totalPrice),
         ],
       ),
     );
   }
 
-  Widget _buildOrderItem(Map<String, dynamic> order, int index) {
+  Widget buildOrderItem(Map<String, dynamic> order, int index) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -278,7 +287,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget buildSectionTitle(String title) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(
@@ -289,7 +298,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildTimeOptions() {
+  Widget buildTimeOptions() {
     return Column(
       children: [
         ListTile(
@@ -307,7 +316,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ListTile(
           contentPadding: EdgeInsets.zero,
           title: const Text("Later",style: TextStyle( color: Colors.black, fontWeight: FontWeight.bold)),
-          subtitle: Text("Schedule Pick Up ($txtTimeSelected)"),
+          subtitle: Text("Schedule Pick Up  ${_selectedTime != null ? "($txtTimeSelected)" : ""}"),
           trailing: Icon(selectedOption == 2 ? Icons.radio_button_checked : Icons.radio_button_off, color: selectedOption == 2 ? Color.fromARGB(255, 95, 59, 241) : Color(0xFF5C4033) ),
           onTap: () async{
             final selectedTime = await _showTimePicker(context, _selectedTime);
@@ -327,7 +336,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildListTile(String title, String value, VoidCallback onTap) {
+  Widget buildListTile(String title, String value, VoidCallback onTap) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -337,7 +346,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildPaymentSummary(double total) {
+  Widget buildPaymentSummary(double total) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -378,7 +387,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildBottomCheckout(double total) {
+  Widget buildBottomCheckout(double total) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: const BoxDecoration(
@@ -397,12 +406,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF5C4033),
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              //padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              receiptOrder = {
+                "price" : total,
+                "voucher" : selectedVoucher["precent"],
+                "total" : total - ((total * selectedVoucher["precent"]) /100),
+                "paymentMethod" : selectedCard["cardName"],
+                "schedulePickUp" : txtTimeSelected,
+                "items" : orders,
+              };
+               Navigator.pushNamed(context, transactionScreenRoute, arguments: {
+                  "receiptOrder" : receiptOrder
+                });
+            },
             child: const Text("Checkout", style: TextStyle(color: Colors.white),),
           )
         ],
