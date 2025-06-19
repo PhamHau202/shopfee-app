@@ -6,8 +6,9 @@ import 'package:shopfee_app/route/route_constants.dart';
 class OtpWaitingScreen extends StatefulWidget {
   final String phoneNumber;
   final bool isFinalProcessing;
+  final dynamic user;
 
-  const OtpWaitingScreen({super.key, required this.phoneNumber, required this.isFinalProcessing});
+  const OtpWaitingScreen({super.key, required this.phoneNumber, required this.isFinalProcessing, required this.user});
 
   @override
   State<OtpWaitingScreen> createState() => _OtpWaitingScreenState();
@@ -33,10 +34,11 @@ class _OtpWaitingScreenState extends State<OtpWaitingScreen> {
           _timer?.cancel();   
           if(widget.isFinalProcessing)
           {
-              Navigator.pushNamedAndRemoveUntil(context, createPinCodeScreenRoute,(route) => false, );
+              Navigator.pushNamedAndRemoveUntil(context, createPinCodeScreenRoute,(route) => false, arguments: {
+                "user": widget.user
+              });
           }
-          else{
-            sendOtp();  // Simulate OTP sending
+          else{            
             navigateToOtpInput();
           }     
         }
@@ -46,44 +48,11 @@ class _OtpWaitingScreenState extends State<OtpWaitingScreen> {
     
   }
 
-  void sendOtp() {
-    // In a real app, this would call your backend API to send OTP
-    // For demonstration, we'll just print and simulate delay
-    debugPrint("Sending OTP to device...");
-    
-    // Simulate network delay
-//     Future.delayed(const Duration(seconds: 2), () {
-//       debugPrint("OTP sent successfully!");
-//     });
-
-//       try {
-//     final response = await http.post(
-//       Uri.parse('https://your-api.com/send-otp'),
-//       body: {'phone': '+1234567890'}
-//     );
-    
-//     if (response.statusCode == 200) {
-//       debugPrint("OTP sent successfully");
-//     } else {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text("Failed to send OTP"))
-//       );
-//     }
-//   } catch (e) {
-//     debugPrint("Error sending OTP: $e");
-//   }
-// }
-
-
-
-
-  }
-
   void navigateToOtpInput() async{
-    final rs =  await Navigator.pushReplacementNamed(context, otpCodeConfirmScreenRoute, arguments: {
-                                  "phoneNumber" : widget.phoneNumber
+    await Navigator.pushReplacementNamed(context, otpCodeConfirmScreenRoute, arguments: {
+                                  "phoneNumber" : widget.phoneNumber,
+                                  "user" : widget.user,
                                 },);
-    print(rs.toString());
   }
 
   @override

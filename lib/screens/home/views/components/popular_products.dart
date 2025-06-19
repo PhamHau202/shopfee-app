@@ -1,15 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
-class PupularProducts extends StatelessWidget {
+class PopularProducts extends StatelessWidget {
   final String image;
   final String name;
   final String desc;
   final double price;
   final double? oldPrice;
   final double rating;
-  final int numberSelledOnWeek;
+  //final int numberSelledOnWeek;
 
-  const PupularProducts({
+  const PopularProducts({
     super.key,
     required this.image,
     required this.name,
@@ -17,7 +19,7 @@ class PupularProducts extends StatelessWidget {
     required this.price,
     this.oldPrice,
     required this.rating,
-    required this.numberSelledOnWeek,
+    //required this.numberSelledOnWeek,
   });
 
   @override
@@ -28,39 +30,77 @@ class PupularProducts extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.asset(image, width: 50, height: 50, fit: BoxFit.cover),
+            child: image.isEmpty
+                ? Image.asset('/icons/default_img.jpg', width: 50, height: 60, fit: BoxFit.cover)
+                : Image.memory(base64Decode(image.split(',').last), width: 50, height: 60, fit: BoxFit.cover),
           ),
           const SizedBox(width: 12),
+          
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text(desc, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        name,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "${price.toStringAsFixed(0)}₫",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.black),
+                          ),
+                        ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    // Description
+    Expanded(
+      child: Text(
+        desc,
+        style: const TextStyle(fontSize: 12, color: Colors.grey),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+    ),
+    const SizedBox(width: 8),
+    // Old Price (nếu có)
+    if (oldPrice != null)
+      Text(
+        "${oldPrice!.toStringAsFixed(0)}₫",
+        style: const TextStyle(
+          fontSize: 12,
+          decoration: TextDecoration.lineThrough,
+          color: Colors.grey,
+        ),
+      ),
+  ],
+)
+,
+                
+                const SizedBox(height: 4),
                 Row(
                   children: [
+                    Text(rating.toString(), style: const TextStyle(fontSize: 12)),
                     const Icon(Icons.star, size: 14, color: Colors.amber),
-                    Text(rating.toString(), style: const TextStyle(fontSize: 12))
                   ],
                 ),
               ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text("Rp${price.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold)),
-              if (oldPrice  != null)
-                Text(
-                  "Rp${oldPrice!.toStringAsFixed(0)}",
-                  style: const TextStyle(
-                    fontSize: 12,
-                    decoration: TextDecoration.lineThrough,
-                    color: Colors.grey,
-                  ),
-                ),
-            ],
-          ),
+          
           const Padding(padding: EdgeInsets.only(bottom: 8),)
         ],
       ),

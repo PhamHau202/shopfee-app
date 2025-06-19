@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shopfee_app/route/route_constants.dart';
+import 'package:shopfee_app/service/api_service.dart';
 
 class CreatePinCodeScreen extends StatefulWidget {
-  const CreatePinCodeScreen({super.key});
+  const CreatePinCodeScreen({super.key, required this.user});
+
+  final dynamic user;
 
   @override
   State<CreatePinCodeScreen> createState() => _CreatePinCodeScreenState();
@@ -97,10 +100,26 @@ class _CreatePinCodeScreenState extends State<CreatePinCodeScreen> {
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
-                onPressed: currentPin.length == 6 ? () {
-                  
-                  //navigate to the home screen
-                  Navigator.pushNamed(context, homeSkeletonScreenRoute);
+                onPressed: currentPin.length == 6 ? () async {
+                  bool registerSuccess = await ApiService.registerUser(widget.user["name"], widget.user["phoneNumber"], currentPin);
+                      if (registerSuccess) {
+                        //navigate to the home screen
+                        Navigator.pushNamed(context, homeSkeletonScreenRoute);
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text('Error'),
+                            content: Text('Failed to register user.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pushNamed(context, registerScreenRoute),
+                                child: Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }                                        
                 } : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.brown,

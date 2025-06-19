@@ -4,7 +4,9 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shopfee_app/route/route_constants.dart';
 
 class PinCodeScreen extends StatefulWidget {
-  const PinCodeScreen({super.key});
+  const PinCodeScreen({super.key, required this.pinCode});
+
+  final String pinCode;
 
   @override
   State<PinCodeScreen> createState() => _PinCodeScreenState();
@@ -96,9 +98,28 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
               height: 48,
               child: ElevatedButton(
                 onPressed: currentPin.length == 6 ? () {
-                  
-                  //navigate to the home screen
-                  Navigator.pushNamed(context, homeSkeletonScreenRoute);
+                  if (currentPin == widget.pinCode) {
+                    // PIN is correct, navigate to home screen
+                    Navigator.pushNamedAndRemoveUntil(context, homeSkeletonScreenRoute, (route) => false);
+                  } else {
+                    // Show error message
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text('Notice'),
+                        content: Text('Incorrect PIN. Please try again.', style: TextStyle(color: Colors.black),),
+                        actions: [
+                          TextButton(
+                            onPressed: () { 
+                              pinController.clear();
+                              Navigator.of(ctx).pop(); 
+                            },
+                            child: Text('OK',style: TextStyle(color: Colors.black)),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 } : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.brown,

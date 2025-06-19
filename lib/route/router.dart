@@ -8,7 +8,7 @@ import 'package:shopfee_app/screens/auth/views/login_screen.dart';
 import 'package:shopfee_app/screens/auth/views/register_screen.dart';
 import 'package:shopfee_app/screens/checkout/views/checkout_screen.dart';
 import 'package:shopfee_app/screens/entry_point.dart';
-import 'package:shopfee_app/screens/history/views/history_screen.dart';
+import 'package:shopfee_app/screens/history/views/history_orders_screen.dart';
 import 'package:shopfee_app/screens/home/views/home_screen.dart';
 import 'package:shopfee_app/screens/home/views/home_skelton_screen.dart';
 import 'package:shopfee_app/screens/onboarding/views/onboarding_screen.dart';
@@ -42,9 +42,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) => const LoginScreen(),
       );
       case pinCodeScreenRoute:
-        return MaterialPageRoute(builder: (context) => const PinCodeScreen());
+        final args = settings.arguments as Map<String, dynamic>?;
+        final pinCode = args?["pinCode"];
+        return MaterialPageRoute(builder: (context) =>  PinCodeScreen(pinCode: pinCode));
       case createPinCodeScreenRoute:
-        return MaterialPageRoute(builder: (context) => const CreatePinCodeScreen());
+        final args = settings.arguments as Map<String, dynamic> ?;
+        final user = args?["user"];
+        return MaterialPageRoute(builder: (context) => CreatePinCodeScreen(user: user));
       case homeScreenRoute:
         return MaterialPageRoute(
           builder: (context) => const HomeScreen(),
@@ -91,17 +95,19 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       case otpCodeLoadingScreenRoute:
         final args = settings.arguments as Map<String, dynamic>?;
         final phoneNumber = args?['phoneNumber'];
+        final user = args?['user'];
         final isFinalProcessing = args?['isFinalProcessing'];
         
         return MaterialPageRoute(
-          builder: (context) => OtpWaitingScreen(phoneNumber : phoneNumber, isFinalProcessing: isFinalProcessing),
+          builder: (context) => OtpWaitingScreen(phoneNumber : phoneNumber, isFinalProcessing: isFinalProcessing, user: user),
         );
 
       case otpCodeConfirmScreenRoute:
         final args = settings.arguments as Map<String, dynamic>?;
         final phoneNumber = args?['phoneNumber'];
+        final user = args?['user'];
         return MaterialPageRoute(
-          builder: (context) => ConfirmOtpScreen(phoneNumber : phoneNumber),
+          builder: (context) => ConfirmOtpScreen(phoneNumber : phoneNumber, user: user),
         );
 
       case transactionScreenRoute:   
@@ -129,7 +135,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
       case historyScreenRoute:
         return MaterialPageRoute(
-          builder: (context) => const HistoryScreen(),
+          builder: (context) => const HistoryOrdersScreen(),
       );
       case accountScreenRoute:
         return MaterialPageRoute(

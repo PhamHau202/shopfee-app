@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shopfee_app/constants.dart';
 import 'package:shopfee_app/route/route_constants.dart';
+import 'package:shopfee_app/service/api_service.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -96,10 +98,28 @@ class _RegisterFormState extends State<RegisterForm> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, otpCodeLoadingScreenRoute, arguments: {
-                            "phoneNumber" : phoneNumber,
-                            "isFinalProcessing" : false
-                          });
+                        
+                          // ApiService.sendOtp(phoneNumber).then((response) {
+                          //   if (response != "") {
+                          //     // Navigate to OTP code loading screen
+                              Navigator.pushNamed(context, otpCodeLoadingScreenRoute, arguments: {
+                                "phoneNumber" : phoneNumber,
+                                "user" : {
+                                  "name": _nameController.text,
+                                  "phoneNumber": phoneNumber,
+                                },
+                                "isFinalProcessing" : false
+                              });
+                          //   } else {
+                          //     ScaffoldMessenger.of(context).showSnackBar(
+                          //       SnackBar(content: Text('Failed to send OTP code.')),
+                          //     );
+                          //   }
+                          // }).catchError((error) {
+                          //   ScaffoldMessenger.of(context).showSnackBar(
+                          //     SnackBar(content: Text('Error: $error')),
+                          //   );
+                          // });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.brown,
@@ -121,6 +141,20 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
   
+  Future<bool> checkUserExisted(String name, String phoneNumber) async {
+  try {
+    final response = await ApiService.checkUserExisted(phoneNumber);
+
+    if (response["result"] == true) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    print(e);
+    rethrow;
+  }
+}
 
   
 
@@ -280,7 +314,33 @@ class _RegisterFormState extends State<RegisterForm> {
             child: ElevatedButton(
               onPressed: isButtonEnabled ? () async{
                 // Handle registration logic
-                showOtpPopup(context, _phoneController.text);
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  try {
+                    bool userExists = await checkUserExisted(name!, number_phone!);
+                    if (userExists) {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text('Notice'),
+                          content: Text('Phone number $number_phone already exists.', style: TextStyle(color: Colors.black),),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(ctx).pop(),
+                              child: Text('OK',style: TextStyle(color: Colors.black)),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      showOtpPopup(context, _phoneController.text);                      
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: $e')),
+                    );
+                  }
+                }
               } : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled ? Color(0xFF5B4034) : Color(0xFFD9D9D9),

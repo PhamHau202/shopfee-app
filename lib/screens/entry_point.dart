@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shopfee_app/constants.dart';
 import 'package:shopfee_app/screens/account/views/account_screen.dart';
-import 'package:shopfee_app/screens/history/views/history_screen.dart';
+import 'package:shopfee_app/screens/history/views/history_orders_screen.dart';
 import 'package:shopfee_app/screens/home/views/home_screen.dart';
 
 class EntryPoint extends StatefulWidget {
@@ -16,10 +16,10 @@ class EntryPoint extends StatefulWidget {
 class _EntryPointState extends State<EntryPoint> {
   final List _pages = const [
     HomeScreen(),
-    HistoryScreen(),
+    HistoryOrdersScreen(),
     AccountScreen(),
   ];
-  int _currentIndex = 0;
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class _EntryPointState extends State<EntryPoint> {
             child: child,
           );
         },
-        child: _pages[_currentIndex],
+        child: _pages[currentIndex],
       ),
       bottomNavigationBar: Container(
         height: 60,
@@ -52,11 +52,11 @@ class _EntryPointState extends State<EntryPoint> {
           ],
         ),
         child: BottomNavigationBar(
-          currentIndex: _currentIndex,
+          currentIndex: currentIndex,
           onTap: (index) {
-            if (index != _currentIndex) {
+            if (index != currentIndex) {
               setState(() {
-                _currentIndex = index;
+                currentIndex = index;
               });
             }
           },
@@ -73,14 +73,14 @@ class _EntryPointState extends State<EntryPoint> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset("/icons/home.png",
-                      width: 24,height: 24,color: _currentIndex == 0 ? primaryColor : const Color(0xFF999999)),
+                      width: 24,height: 24,color: currentIndex == 0 ? primaryColor : const Color(0xFF999999)),
                   const SizedBox(height: 8),
                   Text(
                     "Home",
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: _currentIndex == 0 ? primaryColor : const Color(0xFF999999),
+                      color: currentIndex == 0 ? primaryColor : const Color(0xFF999999),
                     ),
                   )
                 ],
@@ -91,14 +91,14 @@ class _EntryPointState extends State<EntryPoint> {
               icon: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset("/icons/history.png", width: 30,height: 30,color: _currentIndex == 1 ? primaryColor : const Color(0xFF999999)),
+                  Image.asset("/icons/history.png", width: 30,height: 30,color: currentIndex == 1 ? primaryColor : const Color(0xFF999999)),
                   const SizedBox(height: 4),
                   Text(
                     "History",
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: _currentIndex == 1 ? primaryColor : const Color(0xFF999999),
+                      color: currentIndex == 1 ? primaryColor : const Color(0xFF999999),
                     ),
                   )
                 ],
@@ -109,14 +109,14 @@ class _EntryPointState extends State<EntryPoint> {
               icon: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset("/icons/account.png", width: 24,height: 24,color: _currentIndex == 1 ? primaryColor : const Color(0xFF999999)),
+                  Image.asset("/icons/account.png", width: 24,height: 24,color: currentIndex == 1 ? primaryColor : const Color(0xFF999999)),
                   const SizedBox(height: 8),
                   Text(
                     "Account",
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: _currentIndex == 2 ? primaryColor : const Color(0xFF999999),
+                      color: currentIndex == 2 ? primaryColor : const Color(0xFF999999),
                     ),
                   )
                 ],

@@ -15,7 +15,7 @@ class OnBoardingScreen extends StatefulWidget {
 
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
-  late PageController _pageController;
+  late PageController pageController;
   int _pageIndex = 0;
   final List<Onboard> _onboardData = [
     Onboard(
@@ -37,13 +37,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   @override
   void initState() {
-    _pageController = PageController(initialPage: 0);
+    pageController = PageController(initialPage: 0);
     super.initState();
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
+    pageController.dispose();
     super.dispose();
   }
 
@@ -75,7 +75,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
               Expanded(
                 child: PageView.builder(
-                  controller: _pageController,
+                  controller: pageController,
                   itemCount: _onboardData.length,
                   onPageChanged: (value) {
                     setState(() {
@@ -102,7 +102,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_pageIndex < _onboardData.length - 1) {
-                            _pageController.nextPage(
+                            pageController.nextPage(
                                 curve: Curves.ease, duration: defaultDuration);
                           } else {
                             Navigator.pushNamed(context, registerScreenRoute);

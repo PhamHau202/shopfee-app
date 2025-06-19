@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shopfee_app/route/route_constants.dart';
+import 'package:shopfee_app/service/api_service.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -98,11 +99,30 @@ class _LoginFormState extends State<LoginForm> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: isButtonEnabled ? () {
+              onPressed: isButtonEnabled ? () async{
                 // Handle login logic
+                final response = await ApiService.checkUserExisted(_phoneController.text);
 
-                //navigate to the pin_code screen
-                Navigator.pushNamed(context, pinCodeScreenRoute);
+                if (response["result"] == true) {
+                  //navigate to the pin_code screen
+                  Navigator.pushNamed(context, pinCodeScreenRoute, arguments: {
+                    "pinCode": response["pinCode"],
+                  });
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text('Notice'),
+                      content: Text('Phone number ${_phoneController.text} doesn\'t exist.', style: TextStyle(color: Colors.black),),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          child: Text('OK',style: TextStyle(color: Colors.black)),
+                        ),
+                      ],
+                    ),
+                  );
+                }
               } : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: isButtonEnabled ? Color(0xFF5B4034) : Color(0xFFD9D9D9),

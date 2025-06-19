@@ -5,7 +5,8 @@ import 'package:shopfee_app/route/route_constants.dart';
 
 class ConfirmOtpScreen extends StatefulWidget {
   final String phoneNumber;
-  const ConfirmOtpScreen({super.key, required this.phoneNumber});
+  final dynamic user;
+  const ConfirmOtpScreen({super.key, required this.phoneNumber, required this.user});
 
   @override
   State<ConfirmOtpScreen> createState() => _ConfirmOtpScreenState();
@@ -109,7 +110,8 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                       ? () {
                            Navigator.pushNamed(context, otpCodeLoadingScreenRoute, arguments: {
                             "phoneNumber" : widget.phoneNumber,
-                            "isFinalProcessing" : true
+                            "isFinalProcessing" : true,
+                            "user" : widget.user,
                           });
                         }
                       : null,

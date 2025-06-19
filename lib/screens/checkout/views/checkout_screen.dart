@@ -406,7 +406,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF5C4033),
-              //padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
