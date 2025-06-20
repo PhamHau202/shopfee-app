@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shopfee_app/constants.dart';
+import 'package:shopfee_app/constants/constants.dart';
 import 'package:shopfee_app/screens/account/views/account_screen.dart';
 import 'package:shopfee_app/screens/history/views/history_orders_screen.dart';
 import 'package:shopfee_app/screens/home/views/home_screen.dart';

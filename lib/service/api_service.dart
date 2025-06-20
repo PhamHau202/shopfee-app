@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:shopfee_app/service/api_constants.dart';
+import 'package:shopfee_app/constants/api_constants.dart';
 
 class ApiService {
   static final Dio _dio = Dio(
@@ -99,7 +99,6 @@ static Future<List<dynamic>> getAllProducts() async {
       final response = await _dio.get(getAllProductsUrl);
 
       if (response.statusCode == 200) {
-        print(response.data);
         return response.data as List<dynamic>;
       } else {
         throw Exception('Failed to fetch products');

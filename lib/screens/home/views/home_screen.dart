@@ -98,7 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
         //   if(objectFilter["categoryType"] == "Non-Coffee" && (product["numberSelledOnWeek"] as int) < 80) return false;
         //   if(objectFilter["categoryType"] == "Pastry" && (product["numberSelledOnWeek"] as int) < 20) return false;
         // } 
-      // If all conditions are met, include the product
 
         return true;
       }).toList();

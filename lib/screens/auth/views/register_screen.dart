@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shopfee_app/constants.dart';
+import 'package:shopfee_app/constants/constants.dart';
 import 'package:shopfee_app/route/route_constants.dart';
 import 'package:shopfee_app/screens/auth/views/components/register_form.dart';
 import 'package:flutter/gestures.dart';

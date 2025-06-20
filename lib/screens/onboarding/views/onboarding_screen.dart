@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shopfee_app/components/dot_indicators.dart';
-import 'package:shopfee_app/constants.dart';
+import 'package:shopfee_app/constants/constants.dart';
 import 'package:shopfee_app/route/route_constants.dart';
 
 import '../views/components/onboarding_content.dart';

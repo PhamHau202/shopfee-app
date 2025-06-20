@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:shopfee_app/constants.dart';
+import 'package:shopfee_app/constants/constants.dart';
 
 class SearchBarWidget extends StatelessWidget {
     const SearchBarWidget({super.key,

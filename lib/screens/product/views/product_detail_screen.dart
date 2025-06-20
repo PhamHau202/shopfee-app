@@ -1,9 +1,11 @@
+import 'dart:convert';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final dynamic product;
   final bool flgEdit;
-
   const ProductDetailScreen({super.key, required this.product, required this.flgEdit});
 
   @override
@@ -12,11 +14,13 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int quantity = 1;
-  final noteRegex = RegExp(r"^(.*?), (.*?), Sugar: (.*?), Ice: (.*)$");
+  final drinkNoteRegex = RegExp(r"^(.*?), (.*?), Sugar: (.*?), Ice: (.*)$");
   String variant = "Ice";
   String size = "Regular";
   String sugar = "Normal";
   String ice = "Normal";
+  String filling = "Custard";
+  String cakeShape = "Round";
 
   @override
   void initState() {
@@ -25,7 +29,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     
     if(widget.product.containsKey("note"))
     {
-      final match = noteRegex.firstMatch(widget.product["note"]);
+      final match = drinkNoteRegex.firstMatch(widget.product["note"]);
       if (match != null) {
         variant = match.group(1)!;
         size = match.group(2)!;
@@ -35,8 +39,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
+  String getCategoryName(int categoryId) {
+  // Map category IDs to their names
+    const categoryNames = {
+      1: "Coffee",
+      2: "Non-Coffee",
+      3: "Pastry",
+    };
+
+    return categoryNames[categoryId] ?? "";
+  }
+
+  
+
 @override
   Widget build(BuildContext context) {    
+    final textPainter = TextPainter(
+      text: TextSpan(text: widget.product["description"], style: TextStyle(color: Colors.black)),
+      maxLines: 2,
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: MediaQuery.of(context).size.width - 110);
+
+    final isOverflow = textPainter.didExceedMaxLines;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -67,11 +91,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     child: SizedBox(
                       height: 332,
                       width: double.infinity,
-                      child: Image.asset(
-                        widget.product["imagePath"],
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
-                      ),
+                      child: widget.product["productImage"].isEmpty
+                          ? Image.asset('/icons/default_img.jpg', fit: BoxFit.cover,alignment: Alignment.center,)
+                          : Image.memory(base64Decode(widget.product["productImage"].split(',').last), fit: BoxFit.cover,alignment: Alignment.center,),
                     ),
                   ),
                 ),
@@ -104,11 +126,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(widget.product["type"], style: const TextStyle(color: Colors.black)),
+                        child: Text(getCategoryName(widget.product["categoryId"]), style: const TextStyle(color: Colors.black)),
                       ),
-                      if(widget.product["oldPrice"] != null)
+                      if(widget.product["priceNotDiscount"] != null)
                         Text(
-                        "Rp ${widget.product["oldPrice"].toStringAsFixed(0)}",
+                        "${widget.product["priceNotDiscount"].toStringAsFixed(0)}₫",
                         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey, decoration: TextDecoration.lineThrough,),
                       )
                     ],
@@ -124,7 +146,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                       Text(
-                        "Rp ${widget.product["price"].toStringAsFixed(0)}",
+                        "${widget.product["price"].toStringAsFixed(0)}₫",
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
                       )
                     ],
@@ -132,10 +154,53 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                        Expanded(
-                          child: Text(widget.product["desc"], style: const TextStyle(color: Colors.black)),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            isOverflow
+                                ? RichText(
+                                    text: TextSpan(
+                                      style: TextStyle(color: Colors.black),
+                                      children: [
+                                        TextSpan(
+                                          text: widget.product["description"].substring(0, textPainter.getPositionForOffset(Offset(textPainter.width, textPainter.height)).offset),
+                                        ),
+                                        const TextSpan(text: '... '),
+                                        TextSpan(
+                                          text: 'More',
+                                          style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) => AlertDialog(
+                                                  backgroundColor: Colors.white,
+                                                  title: const Text("Description", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+                                                  content: Text(widget.product["description"],style: TextStyle(color: Colors.black,)),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () => Navigator.pop(context),
+                                                      child: const Text("Close", style: TextStyle(fontSize: 16),),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Text(
+                                    widget.product["description"],
+                                    style: TextStyle(color: Colors.black),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                          ],
                         ),
-                      //const Spacer(),
+                      ),
+                        
                       IconButton(
                         icon: Icon(Icons.remove_circle_outline, color : quantity == 1 ? Colors.grey : Colors.black),
                         onPressed: quantity == 1 ? null : () {
@@ -194,26 +259,46 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   children: [
                     const Text("Customize", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
                     const SizedBox(height: 16),
-                    buildOptionRow("Variant", ["Ice", "Hot"], variant, (val) {
-                      setState(() {
-                        variant = val;
-                      });
-                    }),
-                    buildOptionRow("Size", ["Regular", "Medium", "Large"], size, (val) {
-                      setState(() {
-                        size = val;
-                      });
-                    }),
-                    buildOptionRow("Sugar", ["Normal", "Less"], sugar, (val) {
-                      setState(() {
-                        sugar = val;
-                      });
-                    }),
-                    buildOptionRow("Ice", ["Normal", "Less"], ice, (val) {
-                      setState(() {
-                        ice = val;
-                      });
-                    }),
+                    if(widget.product["categoryId"] != 3) ...[
+                      buildOptionRow("Variant", ["Ice", "Hot"], variant, (val) {
+                        setState(() {
+                          variant = val;
+                        });
+                      }),
+                      buildOptionRow("Size", ["Regular", "Medium", "Large"], size, (val) {
+                        setState(() {
+                          size = val;
+                        });
+                      }),
+                      buildOptionRow("Sugar", ["Normal", "Less"], sugar, (val) {
+                        setState(() {
+                          sugar = val;
+                        });
+                      }),
+                      buildOptionRow("Ice", ["Normal", "Less"], ice, (val) {
+                        setState(() {
+                          ice = val;
+                        });
+                      }),
+                    ]else
+                    ...[
+                      buildOptionRow("Size", ["Regular", "Medium", "Large"], size, (val) {
+                        setState(() {
+                          size = val;
+                        });
+                      }),
+                      buildOptionRow("Filling", ["Custard", "Chocolate", "Strawberry"], filling, (val) {
+                        setState(() {
+                          filling = val;
+                        });
+                      }),
+                      buildOptionRow("Cake Shape", ["Round", "Square", "Heart"], cakeShape, (val) {
+                        setState(() {
+                          cakeShape = val;
+                        });
+                      }),
+                      
+                    ]
                   ],
                 ),
             ),
@@ -237,28 +322,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     children: [
                       const Text("Total", style: TextStyle(color: Colors.black, fontSize: 14)),
                       const SizedBox(height: 4),
-                      Text("Rp ${(widget.product["price"] * quantity).toStringAsFixed(0)}",
+                      Text("${(widget.product["price"] * quantity).toStringAsFixed(0)}₫",
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
                           color: Colors.black,
-                            ),
-                          ),
-                        ]
+                        ),
                       ),
-                      const Spacer(),
-                      ElevatedButton(
-                        onPressed: () {
+                    ],
+                  ),
+                  const Spacer(),
+                  ElevatedButton(
+                    onPressed: () {
                           final orderDetail = {
                             "productName": widget.product["name"],
                             "quantity": quantity,
-                            "unitPrice": widget.product["price"],
-                            "note": "$variant, $size, Sugar: $sugar, Ice: $ice",
+                            "price": widget.product["price"],
+                            "note": widget.product["categoryId"] != 3 ? "$variant, $size, Sugar: $sugar, Ice: $ice" : "$size, Filling: $filling, Cake Shape: $cakeShape",
                             "subTotal": quantity * widget.product["price"],
-                            "imagePath" : widget.product["imagePath"],
+                            "productImage" : widget.product["productImage"],
                             "type" : widget.product["type"],
-                            "oldPrice": widget.product["oldPrice"],
-                            "desc" : widget.product["desc"],
+                            "priceNotDiscount": widget.product["priceNotDiscount"],
+                            "description" : widget.product["description"],
                             "rating" : widget.product["rating"]
                           };
 
@@ -287,42 +372,67 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     Function(String) onSelected,
   ) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row( 
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      SizedBox(
+        height: 38,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              child: Text(title, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.black)),
+            SizedBox(
+              width: 85,
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
             ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 12,
-              runSpacing: 8,
-              children: options.map((option) {
-                final isSelected = selected == option;
-                return GestureDetector(
-                  onTap: () => onSelected(option),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: isSelected ? const Color(0xFF402218) : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      option,
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black,  fontSize: 12,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: options.map((option) {
+                    final isSelected = selected == option;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: GestureDetector(
+                        onTap: () => onSelected(option),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFF402218)
+                                : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            option,
+                            style: TextStyle(
+                              color: isSelected ? Colors.white : Colors.black,
+                              fontSize: 12,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              }).toList(),
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           ],
         ),
-        const SizedBox(height: 15),
-      ],
-    );
+      ),
+      const SizedBox(height: 4),
+    ],
+  );
   }
+
+
 }

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shopfee_app/constants.dart';
+import 'package:shopfee_app/constants/constants.dart';
 import 'package:shopfee_app/route/route_constants.dart';
 import 'package:shopfee_app/service/api_service.dart';
 

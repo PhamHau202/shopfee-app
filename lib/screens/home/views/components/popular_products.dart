@@ -64,36 +64,32 @@ class PopularProducts extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Row(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    // Description
-    Expanded(
-      child: Text(
-        desc,
-        style: const TextStyle(fontSize: 12, color: Colors.grey),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-    ),
-    const SizedBox(width: 8),
-    // Old Price (nếu có)
-    if (oldPrice != null)
-      Text(
-        "${oldPrice!.toStringAsFixed(0)}₫",
-        style: const TextStyle(
-          fontSize: 12,
-          decoration: TextDecoration.lineThrough,
-          color: Colors.grey,
-        ),
-      ),
-  ],
-)
-,
-                
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        desc,
+                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    if (oldPrice != null)
+                      Text(
+                        "${oldPrice!.toStringAsFixed(0)}₫",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          decoration: TextDecoration.lineThrough,
+                          color: Colors.grey,
+                        ),
+                      ),
+                  ],
+                ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Text(rating.toString(), style: const TextStyle(fontSize: 12)),
+                    Text(rating.toString(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black)),
                     const Icon(Icons.star, size: 14, color: Colors.amber),
                   ],
                 ),

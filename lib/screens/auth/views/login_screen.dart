@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:shopfee_app/constants.dart';
+import 'package:shopfee_app/constants/constants.dart';
 import 'package:shopfee_app/route/route_constants.dart';
 import 'package:shopfee_app/screens/auth/views/components/login_form.dart';
 
